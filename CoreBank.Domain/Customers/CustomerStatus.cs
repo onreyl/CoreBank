@@ -1,4 +1,4 @@
-﻿namespace CoreBank.Domain.Customers;
+﻿namespace Corebank.Domain.Customers;
 
 public enum CustomerStatus
 {

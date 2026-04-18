@@ -1,6 +1,6 @@
-﻿using CoreBank.Domain.Common;
+﻿using Corebank.Domain.Common;
 
-namespace CoreBank.Domain.Customers
+namespace Corebank.Domain.Customers
 {
     public class Customer : Entity
     {
