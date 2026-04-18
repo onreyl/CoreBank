@@ -1,4 +1,4 @@
-﻿namespace CoreBank.Application;
+﻿namespace Corebank.Application;
 
 public class Class1
 {

@@ -1,6 +1,6 @@
-﻿namespace CoreBank.Domain.Accounts
+﻿namespace Corebank.Domain.Accounts
 {
-    public class Money
+    public sealed class Money
     {
         public decimal Amount { get; }
         public string Currency { get; }
@@ -8,13 +8,16 @@
         {
             if (string.IsNullOrEmpty(currency))
             {
-                throw new ArgumentException("Currency cannot be empty");
+                throw new InvalidMoneyException("Currency cannot be empty");
             }
             if (currency.Length != 3)
             {
-                throw new ArgumentException("You entered the wrong currency");
+                throw new InvalidMoneyException("You entered the wrong currency");
             }
-
+            if (amount < 0)
+            {
+                throw new InvalidMoneyException("Amount cannot be negative");
+            }
             Currency = currency.ToUpper();
             Amount = amount;
         }
@@ -23,7 +26,7 @@
         {
             if (Currency != other.Currency)
             {
-                throw new InvalidOperationException("The currencies are not the same");
+                throw new CurrencyMismatchException(this.Currency, other.Currency);
             }
             decimal newAmount = Amount + other.Amount;
             return new Money(newAmount, Currency);
@@ -32,11 +35,20 @@
         {
             if (Currency != other.Currency)
             {
-                throw new InvalidOperationException("The currencies are not the same");
+                throw new CurrencyMismatchException(this.Currency, other.Currency);
             }
             decimal newAmount = Amount - other.Amount;
             return new Money(newAmount, Currency);
         }
+
+        public static bool operator ==(Money? left, Money? right)
+        {
+            if (left is null) return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Money? left, Money? right)
+            => !(left == right);
         public override bool Equals(object? obj)
         {
             if (obj is not Money other)

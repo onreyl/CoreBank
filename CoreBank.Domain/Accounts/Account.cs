@@ -1,6 +1,6 @@
-﻿using CoreBank.Domain.Common;
+﻿using Corebank.Domain.Common;
 
-namespace CoreBank.Domain.Accounts
+namespace Corebank.Domain.Accounts
 {
     public class Account : Entity
     {
@@ -22,14 +22,18 @@ namespace CoreBank.Domain.Accounts
             if (customerId == Guid.Empty)
                 return Result<Account>.Failure("CustomerId boş olamaz");
 
-            if (string.IsNullOrWhiteSpace(currency))
-                return Result<Account>.Failure("Currency boş olamaz");
+            try
+            {
+                var accountNumber = Guid.NewGuid().ToString("N")[..16].ToUpper();
+                var balance = new Money(0, currency);  
 
-            var accountNumber = Guid.NewGuid().ToString("N")[..16].ToUpper();
-            var balance = new Money(0, currency);
-
-            var account = new Account(customerId, accountNumber, balance);
-            return Result<Account>.Success(account);
+                var account = new Account(customerId, accountNumber, balance);
+                return Result<Account>.Success(account);
+            }
+            catch (DomainException ex)
+            {
+                return Result<Account>.Failure(ex.Message);
+            }
         }
 
         public Result Deposit(Money amount)
@@ -37,9 +41,16 @@ namespace CoreBank.Domain.Accounts
             if (amount.Amount <= 0)
                 return Result.Failure("Deposit amount must be positive");
 
-            Balance = Balance.Add(amount);
-            UpdatedAt = DateTime.UtcNow;
-            return Result.Success();
+            try
+            {
+                Balance = Balance.Add(amount);
+                UpdatedAt = DateTime.UtcNow;
+                return Result.Success();
+            }
+            catch (DomainException ex)
+            {
+                return Result.Failure(ex.Message);
+            }
         }
 
         public Result Withdraw(Money amount)
@@ -49,9 +60,16 @@ namespace CoreBank.Domain.Accounts
             if (Balance.Amount < amount.Amount)
                 return Result.Failure("Insufficient balance");
 
-            Balance = Balance.Subtract(amount);
-            UpdatedAt = DateTime.UtcNow;
-            return Result.Success();
+            try
+            {
+                Balance = Balance.Subtract(amount);
+                UpdatedAt = DateTime.UtcNow;
+                return Result.Success();
+            }
+            catch (DomainException ex)
+            {
+                return Result.Failure(ex.Message);
+            }
         }
     }
 }

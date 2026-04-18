@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CoreBank.Domain.Common;
+namespace Corebank.Domain.Common;
 
 public abstract class Entity
 {
