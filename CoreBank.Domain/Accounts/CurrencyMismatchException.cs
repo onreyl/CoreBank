@@ -1,7 +1,10 @@
-﻿using Corebank.Domain.Common;
+﻿using CoreBank.Domain.Common;
 
-public class CurrencyMismatchException : DomainException
+namespace CoreBank.Domain.Accounts
 {
-    public CurrencyMismatchException(string a, string b)
-        : base($"Currency mismatch: {a} vs {b}") { }
+    public class CurrencyMismatchException : DomainException
+    {
+        public CurrencyMismatchException(string a, string b)
+            : base($"Currency mismatch: {a} vs {b}") { }
+    }
 }

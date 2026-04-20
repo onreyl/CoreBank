@@ -1,4 +1,4 @@
-﻿namespace Corebank.Domain.Accounts
+﻿namespace CoreBank.Domain.Accounts
 {
     public sealed class Money
     {

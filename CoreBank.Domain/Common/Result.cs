@@ -1,4 +1,4 @@
-﻿namespace Corebank.Domain.Common;
+﻿namespace CoreBank.Domain.Common;
 
 public class Result
 {

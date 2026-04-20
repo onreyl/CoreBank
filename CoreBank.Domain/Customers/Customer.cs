@@ -1,6 +1,7 @@
-﻿using Corebank.Domain.Common;
+﻿using CoreBank.Domain.Common;
+using Corebank.Domain.Events;
 
-namespace Corebank.Domain.Customers
+namespace CoreBank.Domain.Customers
 {
     public class Customer : Entity
     {
@@ -83,6 +84,14 @@ namespace Corebank.Domain.Customers
                 email,
                 CustomerStatus.PendingVerification);
 
+            customer.RaiseDomainEvent(new CustomerCreated(
+                CustomerId: customer.Id,
+                Tckn: tckn,
+                Email: email,
+                EventId: Guid.NewGuid(),
+                OccurredOn: DateTime.UtcNow
+            ));
+
             return Result<Customer>.Success(customer);
         }
 
@@ -91,8 +100,16 @@ namespace Corebank.Domain.Customers
             if (Status != CustomerStatus.PendingVerification)
                 return Result.Failure($"Sadece PendingVerification durumundaki müşteri verify edilebilir. Şu anki durum: {Status}");
 
+            var oldStatus = Status;
             Status = CustomerStatus.Active;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
+            
+            RaiseDomainEvent(new CustomerVerified(
+                CustomerId: Id,
+                EventId: Guid.NewGuid(),
+                OccurredOn: DateTime.UtcNow
+            ));
+            
             return Result.Success();
         }
 
@@ -101,10 +118,19 @@ namespace Corebank.Domain.Customers
             if (Status != CustomerStatus.Active)
                 return Result.Failure($"Sadece Active durumundaki müşteri suspend edilebilir. Şu anki durum: {Status}");
 
+            var oldStatus = Status;
             Status = CustomerStatus.Passive;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
+            
+            RaiseDomainEvent(new CustomerStatusChanged(
+                CustomerId: Id,
+                OldStatus: oldStatus,
+                NewStatus: Status,
+                EventId: Guid.NewGuid(),
+                OccurredOn: DateTime.UtcNow
+            ));
+            
             return Result.Success();
-
         }
 
         public Result Close()
@@ -112,8 +138,18 @@ namespace Corebank.Domain.Customers
            if (Status == CustomerStatus.Closed || Status == CustomerStatus.PendingVerification)
                 return Result.Failure($"Müşteri zaten kapalı veya doğrulama bekliyor. Şu anki durum: {Status}");
 
+            var oldStatus = Status;
             Status = CustomerStatus.Closed;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
+            
+            RaiseDomainEvent(new CustomerStatusChanged(
+                CustomerId: Id,
+                OldStatus: oldStatus,
+                NewStatus: Status,
+                EventId: Guid.NewGuid(),
+                OccurredOn: DateTime.UtcNow
+            ));
+            
             return Result.Success();
         }
 
@@ -122,8 +158,18 @@ namespace Corebank.Domain.Customers
             if (Status != CustomerStatus.Passive)
                 return Result.Failure($"Sadece Passive durumundaki müşteri reaktif edilebilir. Şu anki durum: {Status}");
 
+            var oldStatus = Status;
             Status = CustomerStatus.Active;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
+            
+            RaiseDomainEvent(new CustomerStatusChanged(
+                CustomerId: Id,
+                OldStatus: oldStatus,
+                NewStatus: Status,
+                EventId: Guid.NewGuid(),
+                OccurredOn: DateTime.UtcNow
+            ));
+            
             return Result.Success();
         }
     }

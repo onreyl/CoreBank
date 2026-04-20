@@ -2,8 +2,9 @@
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.yml" />
   </Folder>
-  <Project Path="CoreBank.API/CoreBank.API.csproj" />
-  <Project Path="CoreBank.Application/CoreBank.Application.csproj" />
-  <Project Path="CoreBank.Domain/CoreBank.Domain.csproj" />
-  <Project Path="CoreBank.Infrastructure/CoreBank.Infrastructure.csproj" />
+  <Project Path="Corebank.API/Corebank.API.csproj" />
+  <Project Path="Corebank.Application/Corebank.Application.csproj" />
+  <Project Path="Corebank.Domain.Tests/Corebank.Domain.Tests.csproj" />
+  <Project Path="Corebank.Domain/Corebank.Domain.csproj" />
+  <Project Path="Corebank.Infrastructure/Corebank.Infrastructure.csproj" />
 </Solution>
