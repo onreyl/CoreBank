@@ -53,6 +53,14 @@ namespace CoreBank.Domain.Accounts
             {
                 Balance = Balance.Add(amount);
                 UpdatedAtUtc = DateTime.UtcNow;
+                
+                RaiseDomainEvent(new MoneyDeposited(
+                    AccountId: Id,
+                    Amount: amount,
+                    EventId: Guid.NewGuid(),
+                    OccurredOn: DateTime.UtcNow
+                ));
+                
                 return Result.Success();
             }
             catch (DomainException ex)
@@ -72,6 +80,14 @@ namespace CoreBank.Domain.Accounts
             {
                 Balance = Balance.Subtract(amount);
                 UpdatedAtUtc = DateTime.UtcNow;
+                
+                RaiseDomainEvent(new MoneyWithdrawn(
+                    AccountId: Id,
+                    Amount: amount,
+                    EventId: Guid.NewGuid(),
+                    OccurredOn: DateTime.UtcNow
+                ));
+                
                 return Result.Success();
             }
             catch (DomainException ex)
