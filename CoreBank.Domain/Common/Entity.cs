@@ -1,18 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using Corebank.Domain.Events;
 
-namespace Corebank.Domain.Common;
+namespace CoreBank.Domain.Common;
 
 public abstract class Entity
 {
     public Guid Id { get; protected set; }
-    public DateTime CreatedAt { get; protected set; }
-    public DateTime? UpdatedAt { get; protected set; }
+    public DateTime CreatedAtUtc { get; protected set; }
+    public DateTime? UpdatedAtUtc { get; protected set; }
 
-    protected Entity()
+    protected Entity() 
     {
         Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
+        CreatedAtUtc = DateTime.UtcNow;
+
     }
+
+    private readonly List<IDomainEvent> _domainEvents = new();
+    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+    protected void RaiseDomainEvent(IDomainEvent domainEvent)
+        => _domainEvents.Add(domainEvent);
+
+    public void ClearDomainEvents() => _domainEvents.Clear();
 }

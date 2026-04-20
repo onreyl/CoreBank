@@ -1,12 +1,12 @@
 services:
   db:
     image: postgres:16
-    container_name: minibank
+    container_name: corebank
     restart: always
     environment:
       POSTGRES_USER: onur
       POSTGRES_PASSWORD: 12345
-      POSTGRES_DB: minibank_db
+      POSTGRES_DB: corebank_db
     ports:
       - "5432:5432"
     volumes:
@@ -14,14 +14,14 @@ services:
 
   cache:
     image: redis:7-alpine
-    container_name: minibank-redis
+    container_name: corebank-redis
     restart: always
     ports:
       - "6379:6379"
 
   mq:
     image: rabbitmq:3-management-alpine
-    container_name: minibank-rabbitmq
+    container_name: corebank-rabbitmq
     restart: always
     ports:
       - "5672:5672"   

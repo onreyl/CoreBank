@@ -1,4 +1,4 @@
-﻿namespace Corebank.Domain.Common
+﻿namespace CoreBank.Domain.Common
 {
     public abstract class DomainException : Exception
     {

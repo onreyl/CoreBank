@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\CoreBank.Domain\CoreBank.Domain.csproj" />
-    <ProjectReference Include="..\CoreBank.Application\CoreBank.Application.csproj" />
+    <ProjectReference Include="..\Corebank.Domain\Corebank.Domain.csproj" />
+    <ProjectReference Include="..\Corebank.Application\Corebank.Application.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

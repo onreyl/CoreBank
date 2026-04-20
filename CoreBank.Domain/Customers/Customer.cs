@@ -1,6 +1,6 @@
-﻿using Corebank.Domain.Common;
+﻿using CoreBank.Domain.Common;
 
-namespace Corebank.Domain.Customers
+namespace CoreBank.Domain.Customers
 {
     public class Customer : Entity
     {
@@ -92,7 +92,7 @@ namespace Corebank.Domain.Customers
                 return Result.Failure($"Sadece PendingVerification durumundaki müşteri verify edilebilir. Şu anki durum: {Status}");
 
             Status = CustomerStatus.Active;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
             return Result.Success();
         }
 
@@ -102,7 +102,7 @@ namespace Corebank.Domain.Customers
                 return Result.Failure($"Sadece Active durumundaki müşteri suspend edilebilir. Şu anki durum: {Status}");
 
             Status = CustomerStatus.Passive;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
             return Result.Success();
 
         }
@@ -113,7 +113,7 @@ namespace Corebank.Domain.Customers
                 return Result.Failure($"Müşteri zaten kapalı veya doğrulama bekliyor. Şu anki durum: {Status}");
 
             Status = CustomerStatus.Closed;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
             return Result.Success();
         }
 
@@ -123,7 +123,7 @@ namespace Corebank.Domain.Customers
                 return Result.Failure($"Sadece Passive durumundaki müşteri reaktif edilebilir. Şu anki durum: {Status}");
 
             Status = CustomerStatus.Active;
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAtUtc = DateTime.UtcNow;
             return Result.Success();
         }
     }

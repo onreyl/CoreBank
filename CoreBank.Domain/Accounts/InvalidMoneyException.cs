@@ -1,6 +1,6 @@
-﻿using Corebank.Domain.Common;
+﻿using CoreBank.Domain.Common;
 
-namespace Corebank.Domain.Accounts
+namespace CoreBank.Domain.Accounts
 {
     public class InvalidMoneyException : DomainException
     {

@@ -1,4 +1,4 @@
-﻿namespace Corebank.Infrastructure;
+﻿namespace CoreBank.Infrastructure;
 
 public class Class1
 {

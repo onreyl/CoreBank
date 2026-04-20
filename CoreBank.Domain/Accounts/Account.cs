@@ -1,6 +1,7 @@
-﻿using Corebank.Domain.Common;
+﻿using Corebank.Domain.Events;
+using CoreBank.Domain.Common;
 
-namespace Corebank.Domain.Accounts
+namespace CoreBank.Domain.Accounts
 {
     public class Account : Entity
     {
@@ -28,6 +29,13 @@ namespace Corebank.Domain.Accounts
                 var balance = new Money(0, currency);  
 
                 var account = new Account(customerId, accountNumber, balance);
+                account.RaiseDomainEvent(new AccountOpened(
+                    AccountId: account.Id,
+                    CustomerId: customerId,
+                    Currency: currency,
+                    EventId: Guid.NewGuid(),
+                    OccurredOn: DateTime.UtcNow
+                ));
                 return Result<Account>.Success(account);
             }
             catch (DomainException ex)
@@ -44,7 +52,7 @@ namespace Corebank.Domain.Accounts
             try
             {
                 Balance = Balance.Add(amount);
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAtUtc = DateTime.UtcNow;
                 return Result.Success();
             }
             catch (DomainException ex)
@@ -63,7 +71,7 @@ namespace Corebank.Domain.Accounts
             try
             {
                 Balance = Balance.Subtract(amount);
-                UpdatedAt = DateTime.UtcNow;
+                UpdatedAtUtc = DateTime.UtcNow;
                 return Result.Success();
             }
             catch (DomainException ex)
