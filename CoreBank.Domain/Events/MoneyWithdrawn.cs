@@ -1,12 +1,10 @@
-﻿using CoreBank.Domain.Accounts;
-
-namespace Corebank.Domain.Events
+﻿namespace Corebank.Domain.Events
 {
     public sealed record MoneyWithdrawn(
         Guid AccountId,
-        Money Amount,
+        decimal Amount,
+        string Currency,
         Guid EventId,
         DateTime OccurredOn
     ) : IDomainEvent;
-   
 }

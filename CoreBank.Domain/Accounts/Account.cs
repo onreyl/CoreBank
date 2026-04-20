@@ -56,7 +56,8 @@ namespace CoreBank.Domain.Accounts
                 
                 RaiseDomainEvent(new MoneyDeposited(
                     AccountId: Id,
-                    Amount: amount,
+                    Amount: amount.Amount,
+                    Currency: amount.Currency,
                     EventId: Guid.NewGuid(),
                     OccurredOn: DateTime.UtcNow
                 ));
@@ -83,7 +84,8 @@ namespace CoreBank.Domain.Accounts
                 
                 RaiseDomainEvent(new MoneyWithdrawn(
                     AccountId: Id,
-                    Amount: amount,
+                    Amount: amount.Amount,
+                    Currency: amount.Currency,
                     EventId: Guid.NewGuid(),
                     OccurredOn: DateTime.UtcNow
                 ));
