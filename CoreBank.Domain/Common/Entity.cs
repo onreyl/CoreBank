@@ -1,5 +1,5 @@
 ﻿
-using Corebank.Domain.Events;
+using CoreBank.Domain.Events;
 
 namespace CoreBank.Domain.Common;
 

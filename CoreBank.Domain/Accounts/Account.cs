@@ -1,4 +1,4 @@
-﻿using Corebank.Domain.Events;
+﻿using CoreBank.Domain.Events;
 using CoreBank.Domain.Common;
 
 namespace CoreBank.Domain.Accounts

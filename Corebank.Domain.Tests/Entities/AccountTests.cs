@@ -1,9 +1,9 @@
-using Corebank.Domain.Events;
+using CoreBank.Domain.Events;
 using CoreBank.Domain.Accounts;
 using CoreBank.Domain.Customers;
 using FluentAssertions;
 
-namespace Corebank.Domain.Tests.Entities;
+namespace CoreBank.Domain.Tests.Entities;
 
 public class AccountTests
 {

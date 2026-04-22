@@ -1,4 +1,4 @@
-﻿namespace Corebank.Domain.Events;
+﻿namespace CoreBank.Domain.Events;
 
 public interface IDomainEvent
 {
