@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corebank.Domain\Corebank.Domain.csproj" />
+    <ProjectReference Include="..\CoreBank.Domain\CoreBank.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,9 @@
-using Corebank.Domain.Events;
+using CoreBank.Domain.Events;
 using CoreBank.Domain.Accounts;
+using CoreBank.Domain.Customers;
 using FluentAssertions;
 
-namespace Corebank.Domain.Tests.Entities;
+namespace CoreBank.Domain.Tests.Entities;
 
 public class AccountTests
 {
@@ -27,5 +28,41 @@ public class AccountTests
         accountOpened.AccountId.Should().Be(account.Id);
         accountOpened.CustomerId.Should().Be(customerId);
         accountOpened.Currency.Should().Be(currency);
+    }
+
+    [Fact]
+    public void Deposit_Should_Raise_MoneyDeposited_Event()
+    {
+        var account = Account.Open(Guid.NewGuid(), "TRY").Value;
+
+        var result = account.Deposit(new Money(100, "TRY"));
+        result.IsSuccess.Should().BeTrue();
+
+        account.DomainEvents.Should().HaveCount(2);
+        account.DomainEvents[1].Should().BeOfType<MoneyDeposited>();
+
+        var moneyDeposited = (MoneyDeposited)account.DomainEvents[1];
+        moneyDeposited.AccountId.Should().Be(account.Id);
+        moneyDeposited.Amount.Should().Be(100m);
+        moneyDeposited.Currency.Should().Be("TRY");
+
+    }
+
+    [Fact]
+    public void Withdraw_Should_Raise_MoneyWithdrawn_Event()
+    {
+        var account = Account.Open(Guid.NewGuid(), "TRY").Value;
+        account.Deposit(new Money(100, "TRY"));
+
+        var result = account.Withdraw(new Money(50, "TRY"));
+        result.IsSuccess.Should().BeTrue();
+
+        account.DomainEvents.Should().HaveCount(3);
+        account.DomainEvents[2].Should().BeOfType<MoneyWithdrawn>();
+
+        var moneyWithdrawn = (MoneyWithdrawn)account.DomainEvents[2];
+        moneyWithdrawn.AccountId.Should().Be(account.Id);
+        moneyWithdrawn.Amount.Should().Be(50m);
+        moneyWithdrawn.Currency.Should().Be("TRY");
     }
 }

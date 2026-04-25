@@ -1,19 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>078de3ed-dfc7-480c-a1bb-fd4b1f2baffa</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corebank.Domain\Corebank.Domain.csproj" />
-    <ProjectReference Include="..\Corebank.Application\Corebank.Application.csproj" />
-    <ProjectReference Include="..\Corebank.Infrastructure\Corebank.Infrastructure.csproj" />
+    <ProjectReference Include="..\CoreBank.Domain\CoreBank.Domain.csproj" />
+    <ProjectReference Include="..\CoreBank.Application\CoreBank.Application.csproj" />
+    <ProjectReference Include="..\CoreBank.Infrastructure\CoreBank.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

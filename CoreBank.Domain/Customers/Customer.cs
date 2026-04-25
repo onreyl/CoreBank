@@ -1,5 +1,5 @@
 ﻿using CoreBank.Domain.Common;
-using Corebank.Domain.Events;
+using CoreBank.Domain.Events;
 
 namespace CoreBank.Domain.Customers
 {
@@ -13,10 +13,8 @@ namespace CoreBank.Domain.Customers
         public string Email { get; private set; } = null!;
         public CustomerStatus Status { get; private set; }
 
-        // EF Core için
         private Customer() { }
-
-        // Asıl constructor
+        
         private Customer(
             string tckn,
             string firstName,
