@@ -1,5 +1,4 @@
-﻿using CoreBank.Domain.Common;
-using MediatR;
+﻿using CoreBank.Application.Abstractions.Messaging;
 
 namespace CoreBank.Application.Customers.Commands.CreateCustomer;
 
@@ -10,4 +9,4 @@ public sealed record CreateCustomerCommand(
     DateOnly DateOfBirth,
     string PhoneNumber,
     string Email
-) : IRequest<Result<Guid>>;
+) : ICommand<Guid>;
