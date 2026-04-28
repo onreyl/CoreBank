@@ -1,14 +1,14 @@
 using CoreBank.Infrastructure;
+using CoreBank.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(
-        typeof(CoreBank.Application.Customers.Commands.CreateCustomer.CreateCustomerCommand).Assembly));
 builder.Services.AddControllers();
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CoreBank.Application.Abstractions.Messaging;
 
-namespace CoreBank.Application.Customers.Commands.VerifyCustomer
-{
-    internal class VerifyCustomerCommand
-    {
-    }
-}
+namespace CoreBank.Application.Customers.Commands.VerifyCustomer;
+
+public sealed record VerifyCustomerCommand(Guid CustomerId) : ICommand;
