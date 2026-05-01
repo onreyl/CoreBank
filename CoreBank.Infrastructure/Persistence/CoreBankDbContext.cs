@@ -1,14 +1,23 @@
-﻿using CoreBank.Domain.Accounts;
+﻿using CoreBank.Application.Abstractions.Messaging;
+using CoreBank.Domain.Accounts;
+using CoreBank.Domain.Common;
 using CoreBank.Domain.Customers;
+using CoreBank.Domain.Events;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreBank.Infrastructure.Persistence;
 
 public class CoreBankDbContext : DbContext
 {
-    public CoreBankDbContext(DbContextOptions<CoreBankDbContext> options)
+    private readonly IPublisher _publisher;
+
+    public CoreBankDbContext(
+        DbContextOptions<CoreBankDbContext> options,
+        IPublisher publisher)
         : base(options)
     {
+        _publisher = publisher;
     }
 
     public DbSet<Customer> Customers => Set<Customer>();
@@ -18,5 +27,38 @@ public class CoreBankDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(CoreBankDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+    }
+
+    public override async Task<int> SaveChangesAsync(
+        CancellationToken cancellationToken = default)
+    {
+        await PublishDomainEventsAsync(cancellationToken);
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task PublishDomainEventsAsync(CancellationToken cancellationToken)
+    {
+        var entitiesWithEvents = ChangeTracker
+            .Entries<Entity>()
+            .Where(entry => entry.Entity.DomainEvents.Any())
+            .Select(entry => entry.Entity)
+            .ToList();
+
+        var domainEvents = entitiesWithEvents
+            .SelectMany(entity => entity.DomainEvents)
+            .ToList();
+
+        foreach (var entity in entitiesWithEvents)
+            entity.ClearDomainEvents();
+
+        foreach (var domainEvent in domainEvents)
+        {
+            var notificationType = typeof(DomainEventNotification<>)
+                .MakeGenericType(domainEvent.GetType());
+
+            var notification = Activator.CreateInstance(notificationType, domainEvent)!;
+
+            await _publisher.Publish(notification, cancellationToken);
+        }
     }
 }
