@@ -1,9 +1,8 @@
-﻿using CoreBank.Application.Customers.Commands.CreateCustomer;
-using CoreBank.Application.Customers.Commands.SuspendCustomer;
-using CoreBank.Application.Customers.Commands.VerifyCustomer;
-using CoreBank.Application.Customers.Queries.GetCustomerById;
+﻿using CoreBank.Application.Users.Commands.LoginUser;
+using CoreBank.Application.Users.Commands.RegisterUser;
 using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -11,66 +10,37 @@ namespace CoreBank.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public sealed class CustomersController : ControllerBase
+[AllowAnonymous]
+public sealed class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public CustomersController(IMediator mediator)
+    public AuthController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(
-        CreateCustomerCommand command,
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(
+        RegisterUserCommand command,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(command, cancellationToken);
 
         return result.Match<IActionResult>(
-            id => CreatedAtAction(
-                nameof(Create),
-                new { id },
-                id),
+            response => Ok(response),
             errors => Problem(errors));
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(
-    Guid id,
-    CancellationToken cancellationToken)
-    {
-        var query = new GetCustomerByIdQuery(id);
-        var result = await _mediator.Send(query, cancellationToken);
-
-        return result.Match<IActionResult>(
-            dto => Ok(dto),
-            errors => Problem(errors));
-    }
-
-    [HttpPost("{id:guid}/verify")]
-    public async Task<IActionResult> Verify(
-        Guid id,
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(
+        LoginUserCommand command,
         CancellationToken cancellationToken)
     {
-        var command = new VerifyCustomerCommand(id);
         var result = await _mediator.Send(command, cancellationToken);
 
         return result.Match<IActionResult>(
-            _ => NoContent(),
-            errors => Problem(errors));
-    }
-
-    [HttpPost("{id:guid}/suspend")]
-    public async Task<IActionResult> Suspend(
-    Guid id,
-    CancellationToken cancellationToken)
-    {
-        var command = new SuspendCustomerCommand(id);
-        var result = await _mediator.Send(command, cancellationToken);
-
-        return result.Match<IActionResult>(
-            _ => NoContent(),
+            authResult => Ok(authResult),
             errors => Problem(errors));
     }
 
@@ -88,8 +58,8 @@ public sealed class CustomersController : ControllerBase
             ErrorType.Conflict => StatusCodes.Status409Conflict,
             ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
             ErrorType.Forbidden => StatusCodes.Status403Forbidden,
-            ErrorType.Failure => StatusCodes.Status422UnprocessableEntity,  
-            ErrorType.Unexpected => StatusCodes.Status500InternalServerError,   
+            ErrorType.Failure => StatusCodes.Status422UnprocessableEntity,
+            ErrorType.Unexpected => StatusCodes.Status500InternalServerError,
             _ => StatusCodes.Status500InternalServerError
         };
 

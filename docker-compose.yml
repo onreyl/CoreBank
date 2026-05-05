@@ -29,6 +29,17 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: onur
       RABBITMQ_DEFAULT_PASS: 12345
-
+  seq:
+    image: datalust/seq:latest
+    container_name: corebank-seq
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORD=12345
+    ports:
+      - "5341:5341"   
+      - "8081:80"     
+    volumes:
+      - seq-data:/data
 volumes:
   postgres_data:
+  seq-data:

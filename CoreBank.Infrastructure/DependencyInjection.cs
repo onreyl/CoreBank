@@ -1,6 +1,9 @@
-﻿using CoreBank.Domain.Repositories;
+﻿using CoreBank.Application.Abstractions.Authentication;
+using CoreBank.Domain.Repositories;
+using CoreBank.Infrastructure.Authentication;
 using CoreBank.Infrastructure.Persistence;
 using CoreBank.Infrastructure.Persistence.Repositories;
+using CoreBank.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,9 +19,13 @@ public static class DependencyInjection
         services.AddDbContext<CoreBankDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
 
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 
         return services;
     }

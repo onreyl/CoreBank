@@ -46,8 +46,8 @@ public sealed class CreateCustomerCommandHandler
             request.Email);
 
         if (customerResult.IsFailure)
-            return Error.Validation(
-                code: "Customer.InvalidData",
+            return Error.Failure(
+                code: "Customer.DomainRule",
                 description: customerResult.Error);
 
         var customer = customerResult.Value;

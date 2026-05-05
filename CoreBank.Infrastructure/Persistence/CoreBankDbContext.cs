@@ -3,6 +3,7 @@ using CoreBank.Domain.Accounts;
 using CoreBank.Domain.Common;
 using CoreBank.Domain.Customers;
 using CoreBank.Domain.Events;
+using CoreBank.Domain.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,7 @@ public class CoreBankDbContext : DbContext
 
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Account> Accounts => Set<Account>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,10 +32,11 @@ public class CoreBankDbContext : DbContext
     }
 
     public override async Task<int> SaveChangesAsync(
-        CancellationToken cancellationToken = default)
+    CancellationToken cancellationToken = default)
     {
+        var result = await base.SaveChangesAsync(cancellationToken);
         await PublishDomainEventsAsync(cancellationToken);
-        return await base.SaveChangesAsync(cancellationToken);
+        return result;
     }
 
     private async Task PublishDomainEventsAsync(CancellationToken cancellationToken)
